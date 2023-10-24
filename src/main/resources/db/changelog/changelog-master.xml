@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="create_community_sequence" author="Nikol Danielyan">
+        <createSequence sequenceName="COMMUNITY_SEQUENCE" startValue="1" incrementBy="1" schemaName="parking_management"/>
+    </changeSet>
+
+    <changeSet id="create_community_table" author="Nikol Danielyan">
+        <createTable tableName="community">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_community"/>
+            </column>
+            <column name="name" type="varchar"/>
+            <column name="location" type="varchar"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_user_sequence" author="Nikol Danielyan">
+        <createSequence sequenceName="USER_SEQUENCE" startValue="1" incrementBy="1"/>
+    </changeSet>
+    <changeSet id="create_user_table" author="Nikol Danielyan">
+        <preConditions>
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+        <createTable tableName="users">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user"/>
+            </column>
+            <column name="firstname" type="varchar"/>
+            <column name="lastname" type="varchar"/>
+            <column name="email" type="varchar"/>
+            <column name="phone" type="varchar"/>
+            <column name="username" type="varchar"/>
+            <column name="password" type="varchar"/>
+            <column name="community_id" type="bigint">
+                <constraints nullable="true" foreignKeyName="community_users_fk" references="community(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_slot_sequence" author="Nikol Danielyan">
+        <createSequence sequenceName="SLOT_SEQUENCE" startValue="1" incrementBy="1"/>
+    </changeSet>
+    <changeSet id="create_slot_table" author="Nikol Danielyan">
+        <createTable tableName="slot">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_slot"/>
+            </column>
+            <column name="version" type="bigint"/>
+            <column name="community_id" type="bigint">
+                <constraints nullable="true" foreignKeyName="community_slot_fk" references="community(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_role_sequence" author="Nikol Danielyan">
+        <createSequence sequenceName="ROLE_SEQUENCE" startValue="1" incrementBy="1"/>
+    </changeSet>
+    <changeSet id="create_role_table" author="Nikol Danielyan">
+        <createTable tableName="roles">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_role"/>
+            </column>
+            <column name="authority" type="varchar"/>
+            <column name="user_id" type="bigint">
+                <constraints nullable="true" foreignKeyName="user_role_fk" references="users(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_booking_sequence" author="Nikol Danielyan">
+        <createSequence sequenceName="BOOKING_SEQUENCE" startValue="1" incrementBy="1"/>
+    </changeSet>
+    <changeSet id="create_booking_table" author="Nikol Danielyan">
+        <createTable tableName="booking">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_booking"/>
+            </column>
+            <column name="start_date" type="timestamp"/>
+            <column name="end_date" type="timestamp"/>
+            <column name="slot_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="slot_booking_fk" references="slot(id)"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="user_booking_fk" references="users(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!--    initial Super admin -->
+    <changeSet id="initial_super_admin" author="">
+        <sql>
+            INSERT INTO users (id, firstname, lastname, email, phone, username, password)
+            VALUES (0, 'Admin', 'Admin','admin@admin.com', '+12345678910', 'admin','$2a$12$d7pCUYfXxNWqEzSAeYEcGu3nzErpXlRgbQ3yYhEM4yzTBJcL6qkKq');
+        </sql>
+    </changeSet>
+</databaseChangeLog>
