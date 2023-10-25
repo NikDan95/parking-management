@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +23,6 @@ import static com.example.parkingmanagement.constant.ParkingManagementConstant.R
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "roles")//FIXME
 public class Role {
 
     @Id

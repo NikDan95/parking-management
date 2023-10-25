@@ -10,7 +10,7 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
     <changeSet id="create_community_sequence" author="Nikol Danielyan">
-        <createSequence sequenceName="COMMUNITY_SEQUENCE" startValue="1" incrementBy="1" schemaName="parking_management"/>
+        <createSequence sequenceName="COMMUNITY_SEQUENCE" startValue="1" incrementBy="1"/>
     </changeSet>
 
     <changeSet id="create_community_table" author="Nikol Danielyan">
@@ -29,10 +29,10 @@
     <changeSet id="create_user_table" author="Nikol Danielyan">
         <preConditions>
             <not>
-                <tableExists tableName="users"/>
+                <tableExists tableName="user"/>
             </not>
         </preConditions>
-        <createTable tableName="users">
+        <createTable tableName="user">
             <column name="id" type="bigint">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user"/>
             </column>
@@ -43,7 +43,7 @@
             <column name="username" type="varchar"/>
             <column name="password" type="varchar"/>
             <column name="community_id" type="bigint">
-                <constraints nullable="true" foreignKeyName="community_users_fk" references="community(id)"/>
+                <constraints nullable="true" foreignKeyName="community_user_fk" references="community(id)"/>
             </column>
         </createTable>
     </changeSet>
@@ -67,13 +67,13 @@
         <createSequence sequenceName="ROLE_SEQUENCE" startValue="1" incrementBy="1"/>
     </changeSet>
     <changeSet id="create_role_table" author="Nikol Danielyan">
-        <createTable tableName="roles">
+        <createTable tableName="role">
             <column name="id" type="bigint">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_role"/>
             </column>
             <column name="authority" type="varchar"/>
             <column name="user_id" type="bigint">
-                <constraints nullable="true" foreignKeyName="user_role_fk" references="users(id)"/>
+                <constraints nullable="true" foreignKeyName="user_role_fk" references="user(id)"/>
             </column>
         </createTable>
     </changeSet>
@@ -92,16 +92,21 @@
                 <constraints nullable="false" foreignKeyName="slot_booking_fk" references="slot(id)"/>
             </column>
             <column name="user_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="user_booking_fk" references="users(id)"/>
+                <constraints nullable="false" foreignKeyName="user_booking_fk" references="user(id)"/>
             </column>
         </createTable>
     </changeSet>
 
     <!--    initial Super admin -->
-    <changeSet id="initial_super_admin" author="">
-        <sql>
-            INSERT INTO users (id, firstname, lastname, email, phone, username, password)
-            VALUES (0, 'Admin', 'Admin','admin@admin.com', '+12345678910', 'admin','$2a$12$d7pCUYfXxNWqEzSAeYEcGu3nzErpXlRgbQ3yYhEM4yzTBJcL6qkKq');
-        </sql>
+    <changeSet id="initial_super_admin" author="Nikol Danielyan" context="dev">
+        <insert tableName="user">
+            <column name="id">0</column>
+            <column name="firstname">Admin</column>
+            <column name="lastname">Admin</column>
+            <column name="email">admin@admin.com</column>
+            <column name="phone">+12345678910</column>
+            <column name="username">admin</column>
+            <column name="password">$2a$12$d7pCUYfXxNWqEzSAeYEcGu3nzErpXlRgbQ3yYhEM4yzTBJcL6qkKq</column>
+        </insert>
     </changeSet>
 </databaseChangeLog>

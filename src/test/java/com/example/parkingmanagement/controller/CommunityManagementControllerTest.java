@@ -27,8 +27,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.example.constant.TestConstants.BOOK_SLOT_API;
 import static com.example.constant.TestConstants.MOCK_USER_USERNAME;
@@ -123,7 +121,6 @@ class CommunityManagementControllerTest {
         addBidirectionalMapping(community, user, slot);
         Community savedCommunity = communityRepository.save(community);
         userRepository.save(user);
-        BookingCreateRequest bookingCreateRequest = buildBookingRequest();
         ResponseEntity<String> responseEntity = put(RELEASE_SLOT_API + savedCommunity.getId() + "?slotId=2", null, String.class);
         assertEquals(OK, responseEntity.getStatusCode());
         assertEquals(SUCCESSFULLY_RELEASED, responseEntity.getBody());
@@ -136,14 +133,6 @@ class CommunityManagementControllerTest {
                 HttpMethod.PUT,
                 new HttpEntity<>(requestBody, addSecurityHeaders(new HttpHeaders())),
                 returnType);
-    }
-
-    private ResponseEntity<String> putTest(final String url, long slotId) {
-        Map<String, Long> requestBody = Map.of("slotId", slotId);
-        return restTemplate.exchange(url,
-                HttpMethod.PUT,
-                new HttpEntity<>(requestBody, addSecurityHeaders(new HttpHeaders())),
-                String.class);
     }
 
     private HttpHeaders addSecurityHeaders(HttpHeaders headers) {
